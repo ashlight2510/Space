@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Space — 평수 변환기</title>
+    <meta name="description" content="평 ↔ ㎡ ↔ ft² 빠른 변환 (Space)" />
+    <style>
+      :root {
+        --bg: #0b1020;
+        --card: rgba(17, 26, 51, 0.82);
+        --text: #e9eeff;
+        --muted: #9aa7c7;
+        --line: rgba(255, 255, 255, 0.1);
+        --accent: #2b5cff;
+        --ok: #22c55e;
+        --warn: #f59e0b;
+        --radius: 18px;
+        --shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+      }
+      * {
+        box-sizing: border-box;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
+          Apple SD Gothic Neo, Noto Sans KR;
+      }
+      body {
+        margin: 0;
+        color: var(--text);
+        background: radial-gradient(1200px 700px at 20% 0%, #1a2b5a, var(--bg)),
+          radial-gradient(900px 600px at 90% 20%, #10224a, transparent);
+        min-height: 100vh;
+      }
+      .wrap {
+        max-width: 980px;
+        margin: 24px auto;
+        padding: 0 16px;
+      }
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 14px;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 900;
+        letter-spacing: 0.2px;
+      }
+      .brand .logo {
+        width: 40px;
+        height: 40px;
+        border-radius: 14px;
+        display: grid;
+        place-items: center;
+        background: linear-gradient(
+          135deg,
+          rgba(43, 92, 255, 0.35),
+          rgba(255, 255, 255, 0.06)
+        );
+        border: 1px solid var(--line);
+        box-shadow: var(--shadow);
+        font-size: 18px;
+      }
+      .brand .title {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.1;
+      }
+      .brand .title small {
+        font-weight: 600;
+        color: var(--muted);
+        margin-top: 4px;
+      }
+      .top-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
+      button {
+        border: none;
+        border-radius: 12px;
+        padding: 10px 12px;
+        font-weight: 800;
+        cursor: pointer;
+        color: white;
+        background: var(--accent);
+        box-shadow: 0 12px 30px rgba(43, 92, 255, 0.18);
+      }
+      button.ghost {
+        background: transparent;
+        border: 1px solid var(--line);
+        color: var(--text);
+        box-shadow: none;
+      }
+      button:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 14px;
+      }
+      @media (max-width: 860px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .card {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 16px;
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(10px);
+      }
+      .card h2,
+      .card h3 {
+        margin: 0 0 12px 0;
+      }
+      .muted {
+        color: var(--muted);
+      }
+      .row {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .row.between {
+        justify-content: space-between;
+      }
+      .pill {
+        display: inline-flex;
+        gap: 8px;
+        align-items: center;
+        padding: 8px 10px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        color: var(--text);
+        font-size: 13px;
+      }
+      .pill strong {
+        font-size: 13px;
+      }
+      .controls {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-top: 10px;
+      }
+      @media (max-width: 520px) {
+        .controls {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .field {
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 12px;
+        background: rgba(255, 255, 255, 0.03);
+      }
+      .field label {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: var(--muted);
+        font-weight: 800;
+        font-size: 12px;
+        letter-spacing: 0.2px;
+        margin-bottom: 8px;
+      }
+      .field label .unit {
+        color: var(--text);
+        font-weight: 900;
+      }
+      .input {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      input[type="text"] {
+        width: 100%;
+        background: #0f1733;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: var(--text);
+        padding: 12px 12px;
+        border-radius: 12px;
+        outline: none;
+        font-size: 16px;
+        font-weight: 800;
+      }
+      input[type="text"]::placeholder {
+        color: rgba(154, 167, 199, 0.6);
+        font-weight: 700;
+      }
+      .mini {
+        padding: 9px 10px;
+        border-radius: 12px;
+        background: transparent;
+        border: 1px solid var(--line);
+        color: var(--text);
+        font-weight: 900;
+        cursor: pointer;
+        box-shadow: none;
+        white-space: nowrap;
+      }
+      .mini.ok {
+        border-color: rgba(34, 197, 94, 0.45);
+      }
+      .mini.warn {
+        border-color: rgba(245, 158, 11, 0.45);
+      }
+      .mini:active {
+        transform: translateY(1px);
+      }
+      .help {
+        margin-top: 10px;
+        font-size: 13px;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+      .quick {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 10px;
+      }
+      .quick button {
+        background: transparent;
+        border: 1px solid var(--line);
+        color: var(--text);
+        box-shadow: none;
+        padding: 8px 10px;
+        border-radius: 999px;
+        font-weight: 900;
+      }
+      .sep {
+        height: 1px;
+        background: var(--line);
+        margin: 12px 0;
+      }
+      select {
+        width: 100%;
+        background: #0f1733;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: var(--text);
+        padding: 12px 12px;
+        border-radius: 12px;
+        outline: none;
+        font-weight: 800;
+      }
+      .toast {
+        position: fixed;
+        left: 50%;
+        bottom: 18px;
+        transform: translateX(-50%);
+        background: rgba(17, 26, 51, 0.92);
+        border: 1px solid var(--line);
+        padding: 10px 12px;
+        border-radius: 999px;
+        color: var(--text);
+        box-shadow: var(--shadow);
+        display: none;
+        gap: 8px;
+        align-items: center;
+        font-weight: 900;
+        max-width: 92vw;
+      }
+      .toast.show {
+        display: inline-flex;
+      }
+      .kbd {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          monospace;
+        font-size: 12px;
+        padding: 2px 6px;
+        border-radius: 8px;
+        border: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.03);
+        color: var(--text);
+        font-weight: 800;
+      }
+      footer {
+        margin-top: 14px;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.5;
+      }
+      a {
+        color: inherit;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="wrap">
+      <header>
+        <div class="brand">
+          <div class="logo">🛰️</div>
+          <div class="title">
+            <div>Space</div>
+            <small>평 ↔ ㎡ ↔ ft² 변환기</small>
+          </div>
+        </div>
+
+        <div class="top-actions">
+          <button id="btnSwap" class="ghost" title="기준 입력칸 바꾸기">
+            ⇄ 스왑
+          </button>
+          <button id="btnShare" class="ghost" title="현재 값으로 링크 복사">
+            🔗 공유
+          </button>
+          <button id="btnReset" title="초기화">초기화</button>
+        </div>
+      </header>
+
+      <div class="grid">
+        <section class="card">
+          <div class="row between">
+            <h2 style="margin: 0">변환</h2>
+            <div class="row">
+              <span class="pill">⚡ 실시간</span>
+              <span class="pill"
+                >⌛ 10분? <strong>아니고</strong> 변환기 😄</span
+              >
+            </div>
+          </div>
+
+          <div class="controls">
+            <div class="field" data-unit="pyeong">
+              <label>
+                <span>입력</span>
+                <span class="unit">평 (pyeong)</span>
+              </label>
+              <div class="input">
+                <input
+                  id="inPyeong"
+                  type="text"
+                  inputmode="decimal"
+                  placeholder="예: 24"
+                />
+                <button class="mini ok" id="copyPyeong" title="복사">
+                  복사
+                </button>
+              </div>
+              <div class="help">부동산에서 흔히 쓰는 평 단위.</div>
+            </div>
+
+            <div class="field" data-unit="sqm">
+              <label>
+                <span>입력</span>
+                <span class="unit">㎡ (m²)</span>
+              </label>
+              <div class="input">
+                <input
+                  id="inSqm"
+                  type="text"
+                  inputmode="decimal"
+                  placeholder="예: 84"
+                />
+                <button class="mini ok" id="copySqm" title="복사">복사</button>
+              </div>
+              <div class="help">국제 표준 면적 단위(제곱미터).</div>
+            </div>
+
+            <div class="field" data-unit="sqft">
+              <label>
+                <span>입력</span>
+                <span class="unit">ft² (sq ft)</span>
+              </label>
+              <div class="input">
+                <input
+                  id="inSqft"
+                  type="text"
+                  inputmode="decimal"
+                  placeholder="예: 904"
+                />
+                <button class="mini ok" id="copySqft" title="복사">복사</button>
+              </div>
+              <div class="help">해외에서 흔한 제곱피트.</div>
+            </div>
+
+            <div class="field">
+              <label>
+                <span>표시 옵션</span>
+                <span class="unit">반올림</span>
+              </label>
+              <div class="input">
+                <select id="rounding">
+                  <option value="0">소수 0자리</option>
+                  <option value="1">소수 1자리</option>
+                  <option value="2" selected>소수 2자리</option>
+                  <option value="3">소수 3자리</option>
+                  <option value="4">소수 4자리</option>
+                </select>
+              </div>
+              <div class="help">
+                입력은 자유롭게(콤마 포함 가능). 출력은 선택한 자리수로 정리돼.
+              </div>
+            </div>
+          </div>
+
+          <div class="sep"></div>
+
+          <div class="row between">
+            <div class="muted">
+              빠른 입력: <span class="kbd">Alt</span> +
+              <span class="kbd">1/2/3</span> (평/㎡/ft² 포커스)
+            </div>
+            <div class="row">
+              <button class="ghost" id="btnClean" title="현재 입력칸만 비우기">
+                🧹 현재칸 비우기
+              </button>
+            </div>
+          </div>
+
+          <div class="quick" aria-label="빠른 평 입력">
+            <button data-q="10">10평</button>
+            <button data-q="15">15평</button>
+            <button data-q="20">20평</button>
+            <button data-q="24">24평</button>
+            <button data-q="30">30평</button>
+            <button data-q="34">34평</button>
+            <button data-q="40">40평</button>
+            <button data-q="50">50평</button>
+          </div>
+
+          <div id="status" class="help" style="margin-top: 12px"></div>
+        </section>
+
+        <aside class="card">
+          <h3>요약</h3>
+          <div class="row" style="margin-top: 8px">
+            <span class="pill"
+              >📌 기준: <strong id="primaryLabel">평</strong></span
+            >
+            <span class="pill"
+              >🧾 포맷: <strong id="formatLabel">소수 2자리</strong></span
+            >
+          </div>
+
+          <div class="sep"></div>
+
+          <h3 style="margin-bottom: 10px">한 줄 복사</h3>
+          <div class="field">
+            <label>
+              <span>결과</span>
+              <span class="unit">텍스트</span>
+            </label>
+            <div class="input">
+              <input id="oneLine" type="text" readonly />
+              <button class="mini ok" id="copyOneLine">복사</button>
+            </div>
+            <div class="help">메신저/메모에 붙여넣기 좋게 정리해줘.</div>
+          </div>
+
+          <div class="sep"></div>
+
+          <h3 style="margin-bottom: 10px">참고</h3>
+          <div class="help">
+            • 1평 = 3.3057851239669㎡ :contentReference[oaicite:2]{index=2}<br />
+            • 1㎡ = 10.76391ft² :contentReference[oaicite:3]{index=3}
+          </div>
+
+          <footer>
+            “Space”는 단일 파일이라 서버 없이도 동작해. 파일로 저장해서 바로
+            열면 끝.
+          </footer>
+        </aside>
+      </div>
+    </div>
+
+    <div id="toast" class="toast" role="status" aria-live="polite">
+      ✅ 복사했어
+    </div>
+
+    <script>
+      // === Conversion constants (cited) ===
+      // 1 pyeong = 3.3057851239669 m²
+      const PYEONG_TO_SQM = 3.3057851239669;
+      // 1 m² = 10.76391 ft²
+      const SQM_TO_SQFT = 10.76391;
+
+      const elP = document.getElementById("inPyeong");
+      const elM = document.getElementById("inSqm");
+      const elF = document.getElementById("inSqft");
+
+      const roundingEl = document.getElementById("rounding");
+      const statusEl = document.getElementById("status");
+      const oneLineEl = document.getElementById("oneLine");
+      const toastEl = document.getElementById("toast");
+
+      const primaryLabelEl = document.getElementById("primaryLabel");
+      const formatLabelEl = document.getElementById("formatLabel");
+
+      const btnSwap = document.getElementById("btnSwap");
+      const btnShare = document.getElementById("btnShare");
+      const btnReset = document.getElementById("btnReset");
+      const btnClean = document.getElementById("btnClean");
+
+      let updating = false;
+      let primary = "pyeong"; // pyeong | sqm | sqft
+
+      function showToast(msg, kind = "ok") {
+        toastEl.textContent = msg;
+        toastEl.style.borderColor =
+          kind === "warn" ? "rgba(245,158,11,.45)" : "rgba(34,197,94,.45)";
+        toastEl.classList.add("show");
+        clearTimeout(showToast._t);
+        showToast._t = setTimeout(() => toastEl.classList.remove("show"), 1400);
+      }
+
+      function cleanNumberInput(str) {
+        if (str == null) return "";
+        // allow digits, dot, minus; remove commas/spaces
+        return String(str).replace(/,/g, "").trim();
+      }
+
+      function parseNum(str) {
+        const s = cleanNumberInput(str);
+        if (s === "") return null;
+        const n = Number(s);
+        return Number.isFinite(n) ? n : null;
+      }
+
+      function fmt(n) {
+        const dp = Number(roundingEl.value);
+        // Keep trailing zeros for consistent copy/display
+        const fixed = n.toFixed(dp);
+        // Add thousands separators without breaking decimals
+        const [a, b] = fixed.split(".");
+        const withComma = a.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        return b != null ? `${withComma}.${b}` : withComma;
+      }
+
+      function setPrimaryLabel() {
+        const map = { pyeong: "평", sqm: "㎡", sqft: "ft²" };
+        primaryLabelEl.textContent = map[primary] || "평";
+        formatLabelEl.textContent = `소수 ${roundingEl.value}자리`;
+      }
+
+      function buildOneLine(p, m, f) {
+        if (p == null || m == null || f == null) {
+          oneLineEl.value = "";
+          return;
+        }
+        oneLineEl.value = `${fmt(p)}평 = ${fmt(m)}㎡ = ${fmt(f)}ft²`;
+      }
+
+      function updateStatusFromPrimary(p, m, f) {
+        const dp = Number(roundingEl.value);
+        const map = {
+          pyeong: `현재 기준: 평 입력 → ㎡/ft² 자동 계산 (소수 ${dp}자리)`,
+          sqm: `현재 기준: ㎡ 입력 → 평/ft² 자동 계산 (소수 ${dp}자리)`,
+          sqft: `현재 기준: ft² 입력 → ㎡/평 자동 계산 (소수 ${dp}자리)`,
+        };
+        statusEl.textContent = map[primary] || "";
+        buildOneLine(p, m, f);
+        setPrimaryLabel();
+      }
+
+      function computeFrom(unit) {
+        if (updating) return;
+        updating = true;
+
+        const dp = Number(roundingEl.value);
+        let p = null,
+          m = null,
+          f = null;
+
+        if (unit === "pyeong") {
+          p = parseNum(elP.value);
+          if (p == null) {
+            elM.value = "";
+            elF.value = "";
+            updateStatusFromPrimary(null, null, null);
+            updating = false;
+            return;
+          }
+          m = p * PYEONG_TO_SQM;
+          f = m * SQM_TO_SQFT;
+          elM.value = fmt(m);
+          elF.value = fmt(f);
+          primary = "pyeong";
+        }
+
+        if (unit === "sqm") {
+          m = parseNum(elM.value);
+          if (m == null) {
+            elP.value = "";
+            elF.value = "";
+            updateStatusFromPrimary(null, null, null);
+            updating = false;
+            return;
+          }
+          p = m / PYEONG_TO_SQM;
+          f = m * SQM_TO_SQFT;
+          elP.value = fmt(p);
+          elF.value = fmt(f);
+          primary = "sqm";
+        }
+
+        if (unit === "sqft") {
+          f = parseNum(elF.value);
+          if (f == null) {
+            elP.value = "";
+            elM.value = "";
+            updateStatusFromPrimary(null, null, null);
+            updating = false;
+            return;
+          }
+          m = f / SQM_TO_SQFT;
+          p = m / PYEONG_TO_SQM;
+          elM.value = fmt(m);
+          elP.value = fmt(p);
+          primary = "sqft";
+        }
+
+        updateStatusFromPrimary(p, m, f);
+        updating = false;
+      }
+
+      function focusPrimary() {
+        if (primary === "pyeong") elP.focus();
+        else if (primary === "sqm") elM.focus();
+        else elF.focus();
+      }
+
+      function currentInputEl() {
+        const active = document.activeElement;
+        if (active === elP) return elP;
+        if (active === elM) return elM;
+        if (active === elF) return elF;
+        // fallback to primary
+        return primary === "sqm" ? elM : primary === "sqft" ? elF : elP;
+      }
+
+      function setValueAndCompute(unit, value) {
+        if (unit === "pyeong") elP.value = String(value);
+        if (unit === "sqm") elM.value = String(value);
+        if (unit === "sqft") elF.value = String(value);
+        computeFrom(unit);
+      }
+
+      // Input listeners
+      elP.addEventListener("input", () => computeFrom("pyeong"));
+      elM.addEventListener("input", () => computeFrom("sqm"));
+      elF.addEventListener("input", () => computeFrom("sqft"));
+      roundingEl.addEventListener("change", () => computeFrom(primary));
+
+      // Copy helpers
+      async function copyText(txt) {
+        try {
+          await navigator.clipboard.writeText(txt);
+          showToast("✅ 복사했어");
+        } catch (e) {
+          // fallback
+          const ta = document.createElement("textarea");
+          ta.value = txt;
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand("copy");
+          ta.remove();
+          showToast("✅ 복사했어");
+        }
+      }
+
+      document.getElementById("copyPyeong").onclick = () => {
+        const n = parseNum(elP.value);
+        if (n == null) return showToast("⚠️ 값이 비었어", "warn");
+        copyText(elP.value);
+      };
+      document.getElementById("copySqm").onclick = () => {
+        const n = parseNum(elM.value);
+        if (n == null) return showToast("⚠️ 값이 비었어", "warn");
+        copyText(elM.value);
+      };
+      document.getElementById("copySqft").onclick = () => {
+        const n = parseNum(elF.value);
+        if (n == null) return showToast("⚠️ 값이 비었어", "warn");
+        copyText(elF.value);
+      };
+      document.getElementById("copyOneLine").onclick = () => {
+        if (!oneLineEl.value) return showToast("⚠️ 값이 비었어", "warn");
+        copyText(oneLineEl.value);
+      };
+
+      // Quick buttons: set pyeong and compute
+      document.querySelectorAll(".quick button[data-q]").forEach((b) => {
+        b.addEventListener("click", () =>
+          setValueAndCompute("pyeong", b.dataset.q)
+        );
+      });
+
+      // Swap: rotate primary (pyeong -> sqm -> sqft -> pyeong)
+      btnSwap.onclick = () => {
+        primary =
+          primary === "pyeong" ? "sqm" : primary === "sqm" ? "sqft" : "pyeong";
+        computeFrom(primary);
+        focusPrimary();
+        showToast("↔️ 기준을 바꿨어");
+      };
+
+      // Clean current field
+      btnClean.onclick = () => {
+        const el = currentInputEl();
+        el.value = "";
+        if (el === elP) computeFrom("pyeong");
+        if (el === elM) computeFrom("sqm");
+        if (el === elF) computeFrom("sqft");
+        el.focus();
+        showToast("🧹 비웠어");
+      };
+
+      // Reset all
+      btnReset.onclick = () => {
+        elP.value = "";
+        elM.value = "";
+        elF.value = "";
+        oneLineEl.value = "";
+        primary = "pyeong";
+        setPrimaryLabel();
+        statusEl.textContent = "값을 입력하면 자동으로 변환돼.";
+        showToast("🔄 초기화 완료");
+        elP.focus();
+        // clear URL params
+        history.replaceState(null, "", location.pathname);
+      };
+
+      // Share: store current primary value in URL (?u=pyeong&v=24&d=2)
+      btnShare.onclick = async () => {
+        const unit = primary;
+        const val =
+          unit === "pyeong"
+            ? parseNum(elP.value)
+            : unit === "sqm"
+            ? parseNum(elM.value)
+            : parseNum(elF.value);
+        if (val == null) return showToast("⚠️ 공유할 값이 없어", "warn");
+
+        const url = new URL(location.href);
+        url.searchParams.set("u", unit);
+        url.searchParams.set("v", String(val));
+        url.searchParams.set("d", roundingEl.value);
+
+        await copyText(url.toString());
+        showToast("🔗 링크 복사 완료");
+      };
+
+      // Keyboard shortcuts
+      window.addEventListener("keydown", (e) => {
+        if (!e.altKey) return;
+        if (e.key === "1") {
+          elP.focus();
+          primary = "pyeong";
+          setPrimaryLabel();
+        }
+        if (e.key === "2") {
+          elM.focus();
+          primary = "sqm";
+          setPrimaryLabel();
+        }
+        if (e.key === "3") {
+          elF.focus();
+          primary = "sqft";
+          setPrimaryLabel();
+        }
+      });
+
+      // Load from URL params
+      (function initFromURL() {
+        const url = new URL(location.href);
+        const u = url.searchParams.get("u");
+        const v = url.searchParams.get("v");
+        const d = url.searchParams.get("d");
+        if (d != null && ["0", "1", "2", "3", "4"].includes(d))
+          roundingEl.value = d;
+
+        if (!u || v == null) {
+          setPrimaryLabel();
+          statusEl.textContent = "값을 입력하면 자동으로 변환돼.";
+          return;
+        }
+        if (u === "pyeong" || u === "sqm" || u === "sqft") {
+          primary = u;
+          setValueAndCompute(u, v);
+          focusPrimary();
+          showToast("📥 링크 값 불러왔어");
+        } else {
+          setPrimaryLabel();
+          statusEl.textContent = "값을 입력하면 자동으로 변환돼.";
+        }
+      })();
+    </script>
+  </body>
+</html>
