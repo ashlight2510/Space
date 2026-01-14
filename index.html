@@ -363,6 +363,32 @@
       margin: 16px auto;
         text-align: center;
 }
+    .lang-switch {
+      display: inline-flex;
+      gap: 4px;
+      padding: 2px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--line);
+    }
+    .lang-switch button {
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .lang-switch button.active {
+      background: var(--accent);
+      color: #fff;
+    }
+    .lang-switch button:hover {
+      background: rgba(43, 92, 255, 0.2);
+    }
   </style>
 </head>
 
@@ -372,33 +398,38 @@
           <div class="logo">🛰️</div>
           <div class="title">
             <div>Space</div>
-            <small>평 ↔ ㎡ ↔ ft² 변환기</small>
+            <small data-i18n="titleSmall">평 ↔ ㎡ ↔ ft² 변환기</small>
           </div>
         </div>
 
         <div class="top-actions">
+          <div class="lang-switch" role="tablist" aria-label="Language switcher">
+            <button type="button" data-lang="ko" class="active">KR</button>
+            <button type="button" data-lang="en">EN</button>
+          </div>
           <a
             class="btn-link ghost"
             href="https://funnyfunny.cloud/"
             target="_blank"
             rel="noopener noreferrer"
+            data-i18n="viewMore"
           >
             🌐 다른 서비스 보기
           </a>
-          <button id="btnSwap" class="ghost" title="기준 입력칸 바꾸기">
-            ⇄ 스왑
+          <button id="btnSwap" class="ghost" data-i18n-title="btnSwapTitle" title="기준 입력칸 바꾸기">
+            ⇄ <span data-i18n="btnSwap">스왑</span>
           </button>
-          <button id="btnShare" class="ghost" title="현재 값으로 링크 복사">
-            🔗 공유
+          <button id="btnShare" class="ghost" data-i18n-title="btnShareTitle" title="현재 값으로 링크 복사">
+            🔗 <span data-i18n="btnShare">공유</span>
           </button>
-          <button id="btnReset" title="초기화">초기화</button>
+          <button id="btnReset" data-i18n-title="btnResetTitle" title="초기화" data-i18n="btnReset">초기화</button>
         </div>
       </header>
 
       <div class="grid">
         <section class="card">
           <div class="row between">
-            <h2 style="margin: 0">변환</h2>
+            <h2 style="margin: 0" data-i18n="sectionTitle">변환</h2>
             <div class="row">
               <span class="pill">⚡ 실시간</span>
               <span class="pill"
@@ -410,8 +441,8 @@
           <div class="controls">
             <div class="field" data-unit="pyeong">
               <label>
-                <span>입력</span>
-                <span class="unit">평 (pyeong)</span>
+                <span data-i18n="labelInput">입력</span>
+                <span class="unit" data-i18n="unitPyeong">평 (pyeong)</span>
               </label>
               <div class="input">
                 <input
@@ -420,17 +451,17 @@
                   inputmode="decimal"
                   placeholder="예: 24"
                 />
-                <button class="mini ok" id="copyPyeong" title="복사">
+                <button class="mini ok" id="copyPyeong" data-i18n-title="btnCopy" title="복사" data-i18n="btnCopy">
                   복사
                 </button>
               </div>
-              <div class="help">부동산에서 흔히 쓰는 평 단위.</div>
+              <div class="help" data-i18n="helpPyeong">부동산에서 흔히 쓰는 평 단위.</div>
             </div>
 
             <div class="field" data-unit="sqm">
               <label>
-                <span>입력</span>
-                <span class="unit">㎡ (m²)</span>
+                <span data-i18n="labelInput">입력</span>
+                <span class="unit" data-i18n="unitSqm">㎡ (m²)</span>
               </label>
               <div class="input">
                 <input
@@ -439,15 +470,15 @@
                   inputmode="decimal"
                   placeholder="예: 84"
                 />
-                <button class="mini ok" id="copySqm" title="복사">복사</button>
+                <button class="mini ok" id="copySqm" data-i18n-title="btnCopy" title="복사" data-i18n="btnCopy">복사</button>
               </div>
-              <div class="help">국제 표준 면적 단위(제곱미터).</div>
+              <div class="help" data-i18n="helpSqm">국제 표준 면적 단위(제곱미터).</div>
             </div>
 
             <div class="field" data-unit="sqft">
               <label>
-                <span>입력</span>
-                <span class="unit">ft² (sq ft)</span>
+                <span data-i18n="labelInput">입력</span>
+                <span class="unit" data-i18n="unitSqft">ft² (sq ft)</span>
               </label>
               <div class="input">
                 <input
@@ -456,15 +487,15 @@
                   inputmode="decimal"
                   placeholder="예: 904"
                 />
-                <button class="mini ok" id="copySqft" title="복사">복사</button>
+                <button class="mini ok" id="copySqft" data-i18n-title="btnCopy" title="복사" data-i18n="btnCopy">복사</button>
               </div>
-              <div class="help">해외에서 흔한 제곱피트.</div>
+              <div class="help" data-i18n="helpSqft">해외에서 흔한 제곱피트.</div>
             </div>
 
             <div class="field">
               <label>
-                <span>표시 옵션</span>
-                <span class="unit">반올림</span>
+                <span data-i18n="labelDisplayOption">표시 옵션</span>
+                <span class="unit" data-i18n="unitRounding">반올림</span>
               </label>
               <div class="input">
                 <select id="rounding">
@@ -475,7 +506,7 @@
                   <option value="4">소수 4자리</option>
                 </select>
               </div>
-              <div class="help">
+              <div class="help" data-i18n="helpRounding">
                 입력은 자유롭게(콤마 포함 가능). 출력은 선택한 자리수로 정리돼.
               </div>
             </div>
@@ -485,11 +516,11 @@
 
           <div class="row between">
             <div class="muted">
-              빠른 입력: <span class="kbd">Alt</span> +
-              <span class="kbd">1/2/3</span> (평/㎡/ft² 포커스)
+              <span data-i18n="quickInput">빠른 입력</span>: <span class="kbd">Alt</span> +
+              <span class="kbd">1/2/3</span> (<span data-i18n="quickInputHint">평/㎡/ft² 포커스</span>)
             </div>
             <div class="row">
-              <button class="ghost" id="btnClean" title="현재 입력칸만 비우기">
+              <button class="ghost" id="btnClean" data-i18n-title="btnCleanTitle" title="현재 입력칸만 비우기" data-i18n="btnClean">
                 🧹 현재칸 비우기
               </button>
             </div>
@@ -510,7 +541,7 @@
         </section>
 
         <aside class="card">
-          <h3>요약</h3>
+          <h3 data-i18n="summaryTitle">요약</h3>
           <div class="row" style="margin-top: 8px">
             <span class="pill"
               >📌 기준: <strong id="primaryLabel">평</strong></span
@@ -522,40 +553,233 @@
 
           <div class="sep"></div>
 
-          <h3 style="margin-bottom: 10px">한 줄 복사</h3>
+          <h3 style="margin-bottom: 10px" data-i18n="copyTitle">한 줄 복사</h3>
           <div class="field">
             <label>
-              <span>결과</span>
-              <span class="unit">텍스트</span>
+              <span data-i18n="labelResult">결과</span>
+              <span class="unit" data-i18n="unitText">텍스트</span>
             </label>
             <div class="input">
               <input id="oneLine" type="text" readonly />
-              <button class="mini ok" id="copyOneLine">복사</button>
+              <button class="mini ok" id="copyOneLine" data-i18n="btnCopy">복사</button>
             </div>
-            <div class="help">메신저/메모에 붙여넣기 좋게 정리해줘.</div>
+            <div class="help" data-i18n="helpCopy">메신저/메모에 붙여넣기 좋게 정리해줘.</div>
           </div>
 
           <div class="sep"></div>
 
-          <h3 style="margin-bottom: 10px">참고</h3>
+          <h3 style="margin-bottom: 10px" data-i18n="referenceTitle">참고</h3>
           <div class="help">
             • 1평 = 3.3057851239669㎡ :contentReference[oaicite:2]{index=2}<br />
             • 1㎡ = 10.76391ft² :contentReference[oaicite:3]{index=3}
           </div>
 
-          <footer>
-            “Space”는 단일 파일이라 서버 없이도 동작해. 파일로 저장해서 바로
+          <footer data-i18n="footerText">
+            "Space"는 단일 파일이라 서버 없이도 동작해. 파일로 저장해서 바로
             열면 끝.
           </footer>
         </aside>
       </div>
     </div>
 
-    <div id="toast" class="toast" role="status" aria-live="polite">
+    <div id="toast" class="toast" role="status" aria-live="polite" data-i18n="toastCopy">
       ✅ 복사했어
     </div>
 
     <script>
+      /* i18n */
+      const translations = {
+        ko: {
+          metaTitle: "Space — 평수 변환기",
+          metaDescription: "평 ↔ ㎡ ↔ ft² 빠른 변환 (Space)",
+          titleSmall: "평 ↔ ㎡ ↔ ft² 변환기",
+          viewMore: "🌐 다른 서비스 보기",
+          btnSwap: "스왑",
+          btnSwapTitle: "기준 입력칸 바꾸기",
+          btnShare: "공유",
+          btnShareTitle: "현재 값으로 링크 복사",
+          btnReset: "초기화",
+          btnResetTitle: "초기화",
+          sectionTitle: "변환",
+          btnCopy: "복사",
+          labelInput: "입력",
+          unitPyeong: "평 (pyeong)",
+          unitSqm: "㎡ (m²)",
+          unitSqft: "ft² (sq ft)",
+          helpPyeong: "부동산에서 흔히 쓰는 평 단위.",
+          helpSqm: "국제 표준 면적 단위(제곱미터).",
+          helpSqft: "해외에서 흔한 제곱피트.",
+          labelDisplayOption: "표시 옵션",
+          unitRounding: "반올림",
+          optionDecimal0: "소수 0자리",
+          optionDecimal1: "소수 1자리",
+          optionDecimal2: "소수 2자리",
+          optionDecimal3: "소수 3자리",
+          optionDecimal4: "소수 4자리",
+          helpRounding: "입력은 자유롭게(콤마 포함 가능). 출력은 선택한 자리수로 정리돼.",
+          quickInput: "빠른 입력",
+          quickInputHint: "평/㎡/ft² 포커스",
+          btnClean: "🧹 현재칸 비우기",
+          btnCleanTitle: "현재 입력칸만 비우기",
+          summaryTitle: "요약",
+          labelPrimary: "기준",
+          labelFormat: "포맷",
+          formatDecimal: "소수 {dp}자리",
+          copyTitle: "한 줄 복사",
+          labelResult: "결과",
+          unitText: "텍스트",
+          helpCopy: "메신저/메모에 붙여넣기 좋게 정리해줘.",
+          referenceTitle: "참고",
+          footerText: "\"Space\"는 단일 파일이라 서버 없이도 동작해. 파일로 저장해서 바로 열면 끝.",
+          toastCopy: "✅ 복사했어",
+          toastEmpty: "⚠️ 값이 비었어",
+          toastSwapChanged: "↔️ 기준을 바꿨어",
+          toastCleared: "🧹 비웠어",
+          toastReset: "🔄 초기화 완료",
+          toastNoValue: "⚠️ 공유할 값이 없어",
+          toastLinkCopied: "🔗 링크 복사 완료",
+          toastLinkLoaded: "📥 링크 값 불러왔어",
+          statusAutoConvert: "값을 입력하면 자동으로 변환돼.",
+          statusPyeong: "현재 기준: 평 입력 → ㎡/ft² 자동 계산 (소수 {dp}자리)",
+          statusSqm: "현재 기준: ㎡ 입력 → 평/ft² 자동 계산 (소수 {dp}자리)",
+          statusSqft: "현재 기준: ft² 입력 → ㎡/평 자동 계산 (소수 {dp}자리)",
+          unitPyeongLabel: "평",
+          unitSqmLabel: "㎡",
+          unitSqftLabel: "ft²",
+          oneLineFormat: "{p}평 = {m}㎡ = {f}ft²",
+        },
+        en: {
+          metaTitle: "Space — Area Unit Converter",
+          metaDescription: "Pyeong ↔ m² ↔ ft² quick conversion (Space)",
+          titleSmall: "Pyeong ↔ m² ↔ ft² Converter",
+          viewMore: "🌐 View Other Services",
+          btnSwap: "Swap",
+          btnSwapTitle: "Swap input fields",
+          btnShare: "Share",
+          btnShareTitle: "Copy link with current value",
+          btnReset: "Reset",
+          btnResetTitle: "Reset",
+          sectionTitle: "Conversion",
+          btnCopy: "Copy",
+          labelInput: "Input",
+          unitPyeong: "Pyeong (pyeong)",
+          unitSqm: "m² (m²)",
+          unitSqft: "ft² (sq ft)",
+          helpPyeong: "Commonly used area unit in real estate.",
+          helpSqm: "International standard area unit (square meter).",
+          helpSqft: "Common square feet unit overseas.",
+          labelDisplayOption: "Display Option",
+          unitRounding: "Rounding",
+          optionDecimal0: "0 decimal places",
+          optionDecimal1: "1 decimal place",
+          optionDecimal2: "2 decimal places",
+          optionDecimal3: "3 decimal places",
+          optionDecimal4: "4 decimal places",
+          helpRounding: "Input freely (commas allowed). Output is formatted to the selected decimal places.",
+          quickInput: "Quick Input",
+          quickInputHint: "Focus pyeong/m²/ft²",
+          btnClean: "🧹 Clear Current Field",
+          btnCleanTitle: "Clear current input field only",
+          summaryTitle: "Summary",
+          labelPrimary: "Primary",
+          labelFormat: "Format",
+          formatDecimal: "{dp} decimal places",
+          copyTitle: "One-Line Copy",
+          labelResult: "Result",
+          unitText: "Text",
+          helpCopy: "Formatted for easy paste into messenger/memo.",
+          referenceTitle: "Reference",
+          footerText: "\"Space\" is a single file that works without a server. Just save as a file and open it.",
+          toastCopy: "✅ Copied",
+          toastEmpty: "⚠️ Value is empty",
+          toastSwapChanged: "↔️ Swapped",
+          toastCleared: "🧹 Cleared",
+          toastReset: "🔄 Reset complete",
+          toastNoValue: "⚠️ No value to share",
+          toastLinkCopied: "🔗 Link copied",
+          toastLinkLoaded: "📥 Link value loaded",
+          statusAutoConvert: "Enter a value and it will be converted automatically.",
+          statusPyeong: "Current primary: pyeong input → m²/ft² auto-calculated ({dp} decimal places)",
+          statusSqm: "Current primary: m² input → pyeong/ft² auto-calculated ({dp} decimal places)",
+          statusSqft: "Current primary: ft² input → m²/pyeong auto-calculated ({dp} decimal places)",
+          unitPyeongLabel: "Pyeong",
+          unitSqmLabel: "m²",
+          unitSqftLabel: "ft²",
+          oneLineFormat: "{p}pyeong = {m}m² = {f}ft²",
+        },
+      };
+
+      let currentLang = "ko";
+
+      function t(key, vars = {}) {
+        const langTable = translations[currentLang] || translations.ko;
+        const template = langTable?.[key] ?? translations.ko?.[key] ?? key;
+        if (typeof template !== "string") return template;
+        return template.replace(/\{(\w+)\}/g, (_, token) =>
+          vars[token] !== undefined ? vars[token] : `{${token}}`
+        );
+      }
+
+      function applyTranslations() {
+        document.title = t("metaTitle");
+        const desc = document.querySelector('meta[name="description"]');
+        if (desc) desc.setAttribute("content", t("metaDescription"));
+        document.documentElement.lang = currentLang;
+        document.querySelectorAll("[data-i18n]").forEach((el) => {
+          el.textContent = t(el.dataset.i18n);
+        });
+        document.querySelectorAll("[data-i18n-title]").forEach((el) => {
+          el.setAttribute("title", t(el.dataset.i18nTitle));
+        });
+        // Update select options
+        const roundingEl = document.getElementById("rounding");
+        if (roundingEl) {
+          Array.from(roundingEl.options).forEach((opt, idx) => {
+            const key = `optionDecimal${idx}`;
+            if (t(key) !== key) {
+              opt.textContent = t(key);
+            }
+          });
+        }
+      }
+
+      function setLang(lang, options = {}) {
+        const nextLang = translations[lang] ? lang : "ko";
+        currentLang = nextLang;
+        document.documentElement.lang = nextLang;
+        localStorage.setItem("preferredLang", nextLang);
+        document.querySelectorAll(".lang-switch button").forEach((button) => {
+          button.classList.toggle("active", button.dataset.lang === nextLang);
+        });
+        applyTranslations();
+        setPrimaryLabel();
+        updateStatusFromPrimary(null, null, null);
+
+        if (options.updateUrl) {
+          const url = new URL(window.location.href);
+          url.searchParams.set("lang", nextLang);
+          window.history.replaceState({}, "", url);
+        }
+      }
+
+      function detectLang() {
+        const params = new URLSearchParams(window.location.search);
+        const paramLang = params.get("lang");
+        if (translations[paramLang]) return paramLang;
+        const stored = localStorage.getItem("preferredLang");
+        if (translations[stored]) return stored;
+        const browser = navigator.language?.toLowerCase() || "";
+        return browser.startsWith("ko") ? "ko" : "en";
+      }
+
+      document.querySelectorAll(".lang-switch button").forEach((button) => {
+        button.addEventListener("click", () => {
+          setLang(button.dataset.lang, { updateUrl: true });
+        });
+      });
+
+      setLang(detectLang(), { updateUrl: false });
+
       // === Conversion constants (cited) ===
       // 1 pyeong = 3.3057851239669 m²
       const PYEONG_TO_SQM = 3.3057851239669;
@@ -615,9 +839,13 @@
       }
 
       function setPrimaryLabel() {
-        const map = { pyeong: "평", sqm: "㎡", sqft: "ft²" };
-        primaryLabelEl.textContent = map[primary] || "평";
-        formatLabelEl.textContent = `소수 ${roundingEl.value}자리`;
+        const map = {
+          pyeong: t("unitPyeongLabel"),
+          sqm: t("unitSqmLabel"),
+          sqft: t("unitSqftLabel"),
+        };
+        primaryLabelEl.textContent = map[primary] || t("unitPyeongLabel");
+        formatLabelEl.textContent = t("formatDecimal", { dp: roundingEl.value });
       }
 
       function buildOneLine(p, m, f) {
@@ -625,15 +853,19 @@
           oneLineEl.value = "";
           return;
         }
-        oneLineEl.value = `${fmt(p)}평 = ${fmt(m)}㎡ = ${fmt(f)}ft²`;
+        oneLineEl.value = t("oneLineFormat", {
+          p: fmt(p),
+          m: fmt(m),
+          f: fmt(f),
+        });
       }
 
       function updateStatusFromPrimary(p, m, f) {
         const dp = Number(roundingEl.value);
         const map = {
-          pyeong: `현재 기준: 평 입력 → ㎡/ft² 자동 계산 (소수 ${dp}자리)`,
-          sqm: `현재 기준: ㎡ 입력 → 평/ft² 자동 계산 (소수 ${dp}자리)`,
-          sqft: `현재 기준: ft² 입력 → ㎡/평 자동 계산 (소수 ${dp}자리)`,
+          pyeong: t("statusPyeong", { dp }),
+          sqm: t("statusSqm", { dp }),
+          sqft: t("statusSqft", { dp }),
         };
         statusEl.textContent = map[primary] || "";
         buildOneLine(p, m, f);
@@ -733,7 +965,7 @@
       async function copyText(txt) {
         try {
           await navigator.clipboard.writeText(txt);
-          showToast("✅ 복사했어");
+          showToast(t("toastCopy"));
         } catch (e) {
           // fallback
           const ta = document.createElement("textarea");
@@ -742,27 +974,27 @@
           ta.select();
           document.execCommand("copy");
           ta.remove();
-          showToast("✅ 복사했어");
+          showToast(t("toastCopy"));
         }
       }
 
       document.getElementById("copyPyeong").onclick = () => {
         const n = parseNum(elP.value);
-        if (n == null) return showToast("⚠️ 값이 비었어", "warn");
+        if (n == null) return showToast(t("toastEmpty"), "warn");
         copyText(elP.value);
       };
       document.getElementById("copySqm").onclick = () => {
         const n = parseNum(elM.value);
-        if (n == null) return showToast("⚠️ 값이 비었어", "warn");
+        if (n == null) return showToast(t("toastEmpty"), "warn");
         copyText(elM.value);
       };
       document.getElementById("copySqft").onclick = () => {
         const n = parseNum(elF.value);
-        if (n == null) return showToast("⚠️ 값이 비었어", "warn");
+        if (n == null) return showToast(t("toastEmpty"), "warn");
         copyText(elF.value);
       };
       document.getElementById("copyOneLine").onclick = () => {
-        if (!oneLineEl.value) return showToast("⚠️ 값이 비었어", "warn");
+        if (!oneLineEl.value) return showToast(t("toastEmpty"), "warn");
         copyText(oneLineEl.value);
       };
 
@@ -779,7 +1011,7 @@
           primary === "pyeong" ? "sqm" : primary === "sqm" ? "sqft" : "pyeong";
         computeFrom(primary);
         focusPrimary();
-        showToast("↔️ 기준을 바꿨어");
+        showToast(t("toastSwapChanged"));
       };
 
       // Clean current field
@@ -790,7 +1022,7 @@
         if (el === elM) computeFrom("sqm");
         if (el === elF) computeFrom("sqft");
         el.focus();
-        showToast("🧹 비웠어");
+        showToast(t("toastCleared"));
       };
 
       // Reset all
@@ -801,8 +1033,8 @@
         oneLineEl.value = "";
         primary = "pyeong";
         setPrimaryLabel();
-        statusEl.textContent = "값을 입력하면 자동으로 변환돼.";
-        showToast("🔄 초기화 완료");
+        statusEl.textContent = t("statusAutoConvert");
+        showToast(t("toastReset"));
         elP.focus();
         // clear URL params
         history.replaceState(null, "", location.pathname);
@@ -817,7 +1049,7 @@
             : unit === "sqm"
             ? parseNum(elM.value)
             : parseNum(elF.value);
-        if (val == null) return showToast("⚠️ 공유할 값이 없어", "warn");
+        if (val == null) return showToast(t("toastNoValue"), "warn");
 
         const url = new URL(location.href);
         url.searchParams.set("u", unit);
@@ -825,7 +1057,7 @@
         url.searchParams.set("d", roundingEl.value);
 
         await copyText(url.toString());
-        showToast("🔗 링크 복사 완료");
+        showToast(t("toastLinkCopied"));
       };
 
       // Keyboard shortcuts
@@ -859,17 +1091,17 @@
 
         if (!u || v == null) {
           setPrimaryLabel();
-          statusEl.textContent = "값을 입력하면 자동으로 변환돼.";
+          statusEl.textContent = t("statusAutoConvert");
           return;
         }
         if (u === "pyeong" || u === "sqm" || u === "sqft") {
           primary = u;
           setValueAndCompute(u, v);
           focusPrimary();
-          showToast("📥 링크 값 불러왔어");
+          showToast(t("toastLinkLoaded"));
         } else {
           setPrimaryLabel();
-          statusEl.textContent = "값을 입력하면 자동으로 변환돼.";
+          statusEl.textContent = t("statusAutoConvert");
         }
       })();
     </script>
