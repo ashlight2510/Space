@@ -887,6 +887,10 @@
       }
 
       function setPrimaryLabel() {
+        const primaryLabelEl = document.getElementById("primaryLabel");
+        const formatLabelEl = document.getElementById("formatLabel");
+        if (!primaryLabelEl || !formatLabelEl) return; // 요소가 없으면 리턴
+        
         const map = {
           pyeong: t("unitPyeongLabel"),
           sqm: t("unitSqmLabel"),
