@@ -759,6 +759,11 @@
           }
           el.textContent = t(el.dataset.i18n);
         });
+        // Update label text for "기준" and "포맷" in summary pill
+        const labelPrimaryEl = document.querySelector('[data-i18n="labelPrimary"]');
+        const labelFormatEl = document.querySelector('[data-i18n="labelFormat"]');
+        if (labelPrimaryEl) labelPrimaryEl.textContent = t("labelPrimary");
+        if (labelFormatEl) labelFormatEl.textContent = t("labelFormat");
         document.querySelectorAll("[data-i18n-html]").forEach((el) => {
           el.innerHTML = t(el.dataset.i18nHtml);
         });
