@@ -820,20 +820,13 @@
         return "ko";
       }
 
-      document.querySelectorAll(".lang-switch button").forEach((button) => {
-        button.addEventListener("click", () => {
-          setLang(button.dataset.lang, { updateUrl: true });
-        });
-      });
-
-      setLang(detectLang(), { updateUrl: false });
-
       // === Conversion constants (cited) ===
       // 1 pyeong = 3.3057851239669 m²
       const PYEONG_TO_SQM = 3.3057851239669;
       // 1 m² = 10.76391 ft²
       const SQM_TO_SQFT = 10.76391;
 
+      // DOM 요소들을 먼저 선언
       const elP = document.getElementById("inPyeong");
       const elM = document.getElementById("inSqm");
       const elF = document.getElementById("inSqft");
@@ -851,11 +844,20 @@
       const btnReset = document.getElementById("btnReset");
       const btnClean = document.getElementById("btnClean");
 
-      let updating = false;
-      // primary 변수를 먼저 선언 (setPrimaryLabel에서 참조하기 전에)
+      // primary 변수를 먼저 선언 (setLang 호출 전에)
       let primary = "pyeong"; // pyeong | sqm | sqft
+      let updating = false;
+
+      document.querySelectorAll(".lang-switch button").forEach((button) => {
+        button.addEventListener("click", () => {
+          setLang(button.dataset.lang, { updateUrl: true });
+        });
+      });
+
+      setLang(detectLang(), { updateUrl: false });
 
       function showToast(msg, kind = "ok") {
+        if (!toastEl) return;
         toastEl.textContent = msg;
         toastEl.style.borderColor =
           kind === "warn" ? "rgba(245,158,11,.45)" : "rgba(34,197,94,.45)";
@@ -878,6 +880,7 @@
       }
 
       function fmt(n) {
+        if (!roundingEl) return String(n);
         const dp = Number(roundingEl.value);
         // Keep trailing zeros for consistent copy/display
         const fixed = n.toFixed(dp);
@@ -888,11 +891,9 @@
       }
 
       function setPrimaryLabel() {
-        const primaryLabelEl = document.getElementById("primaryLabel");
-        const formatLabelEl = document.getElementById("formatLabel");
         if (!primaryLabelEl || !formatLabelEl) return; // 요소가 없으면 리턴
         
-        // primary 변수를 안전하게 접근 (변수 선언 순서와 무관하게)
+        // primary 변수를 안전하게 접근
         const currentPrimary = (typeof primary !== "undefined" && primary) ? primary : "pyeong";
         
         const map = {
@@ -901,10 +902,13 @@
           sqft: t("unitSqftLabel"),
         };
         primaryLabelEl.textContent = map[currentPrimary] || t("unitPyeongLabel");
-        formatLabelEl.textContent = t("formatDecimal", { dp: roundingEl.value });
+        if (roundingEl) {
+          formatLabelEl.textContent = t("formatDecimal", { dp: roundingEl.value });
+        }
       }
 
       function buildOneLine(p, m, f) {
+        if (!oneLineEl) return;
         if (p == null || m == null || f == null) {
           oneLineEl.value = "";
           return;
@@ -917,6 +921,7 @@
       }
 
       function updateStatusFromPrimary(p, m, f) {
+        if (!roundingEl || !statusEl) return;
         const dp = Number(roundingEl.value);
         const map = {
           pyeong: t("statusPyeong", { dp }),
@@ -929,7 +934,7 @@
       }
 
       function computeFrom(unit) {
-        if (updating) return;
+        if (updating || !roundingEl) return;
         updating = true;
 
         const dp = Number(roundingEl.value);
@@ -937,51 +942,51 @@
           m = null,
           f = null;
 
-        if (unit === "pyeong") {
+        if (unit === "pyeong" && elP) {
           p = parseNum(elP.value);
           if (p == null) {
-            elM.value = "";
-            elF.value = "";
+            if (elM) elM.value = "";
+            if (elF) elF.value = "";
             updateStatusFromPrimary(null, null, null);
             updating = false;
             return;
           }
           m = p * PYEONG_TO_SQM;
           f = m * SQM_TO_SQFT;
-          elM.value = fmt(m);
-          elF.value = fmt(f);
+          if (elM) elM.value = fmt(m);
+          if (elF) elF.value = fmt(f);
           primary = "pyeong";
         }
 
-        if (unit === "sqm") {
+        if (unit === "sqm" && elM) {
           m = parseNum(elM.value);
           if (m == null) {
-            elP.value = "";
-            elF.value = "";
+            if (elP) elP.value = "";
+            if (elF) elF.value = "";
             updateStatusFromPrimary(null, null, null);
             updating = false;
             return;
           }
           p = m / PYEONG_TO_SQM;
           f = m * SQM_TO_SQFT;
-          elP.value = fmt(p);
-          elF.value = fmt(f);
+          if (elP) elP.value = fmt(p);
+          if (elF) elF.value = fmt(f);
           primary = "sqm";
         }
 
-        if (unit === "sqft") {
+        if (unit === "sqft" && elF) {
           f = parseNum(elF.value);
           if (f == null) {
-            elP.value = "";
-            elM.value = "";
+            if (elP) elP.value = "";
+            if (elM) elM.value = "";
             updateStatusFromPrimary(null, null, null);
             updating = false;
             return;
           }
           m = f / SQM_TO_SQFT;
           p = m / PYEONG_TO_SQM;
-          elM.value = fmt(m);
-          elP.value = fmt(p);
+          if (elM) elM.value = fmt(m);
+          if (elP) elP.value = fmt(p);
           primary = "sqft";
         }
 
@@ -990,9 +995,9 @@
       }
 
       function focusPrimary() {
-        if (primary === "pyeong") elP.focus();
-        else if (primary === "sqm") elM.focus();
-        else elF.focus();
+        if (primary === "pyeong" && elP) elP.focus();
+        else if (primary === "sqm" && elM) elM.focus();
+        else if (elF) elF.focus();
       }
 
       function currentInputEl() {
@@ -1005,9 +1010,9 @@
       }
 
       function setValueAndCompute(unit, value) {
-        if (unit === "pyeong") elP.value = String(value);
-        if (unit === "sqm") elM.value = String(value);
-        if (unit === "sqft") elF.value = String(value);
+        if (unit === "pyeong" && elP) elP.value = String(value);
+        if (unit === "sqm" && elM) elM.value = String(value);
+        if (unit === "sqft" && elF) elF.value = String(value);
         computeFrom(unit);
       }
 
@@ -1034,25 +1039,38 @@
         }
       }
 
-      document.getElementById("copyPyeong").onclick = () => {
-        const n = parseNum(elP.value);
-        if (n == null) return showToast(t("toastEmpty"), "warn");
-        copyText(elP.value);
-      };
-      document.getElementById("copySqm").onclick = () => {
-        const n = parseNum(elM.value);
-        if (n == null) return showToast(t("toastEmpty"), "warn");
-        copyText(elM.value);
-      };
-      document.getElementById("copySqft").onclick = () => {
-        const n = parseNum(elF.value);
-        if (n == null) return showToast(t("toastEmpty"), "warn");
-        copyText(elF.value);
-      };
-      document.getElementById("copyOneLine").onclick = () => {
-        if (!oneLineEl.value) return showToast(t("toastEmpty"), "warn");
-        copyText(oneLineEl.value);
-      };
+      const copyPyeongBtn = document.getElementById("copyPyeong");
+      const copySqmBtn = document.getElementById("copySqm");
+      const copySqftBtn = document.getElementById("copySqft");
+      const copyOneLineBtn = document.getElementById("copyOneLine");
+      
+      if (copyPyeongBtn) {
+        copyPyeongBtn.onclick = () => {
+          const n = parseNum(elP?.value);
+          if (n == null) return showToast(t("toastEmpty"), "warn");
+          copyText(elP.value);
+        };
+      }
+      if (copySqmBtn) {
+        copySqmBtn.onclick = () => {
+          const n = parseNum(elM?.value);
+          if (n == null) return showToast(t("toastEmpty"), "warn");
+          copyText(elM.value);
+        };
+      }
+      if (copySqftBtn) {
+        copySqftBtn.onclick = () => {
+          const n = parseNum(elF?.value);
+          if (n == null) return showToast(t("toastEmpty"), "warn");
+          copyText(elF.value);
+        };
+      }
+      if (copyOneLineBtn) {
+        copyOneLineBtn.onclick = () => {
+          if (!oneLineEl?.value) return showToast(t("toastEmpty"), "warn");
+          copyText(oneLineEl.value);
+        };
+      }
 
       // Quick buttons: set pyeong and compute
       document.querySelectorAll(".quick button[data-q]").forEach((b) => {
@@ -1119,17 +1137,17 @@
       // Keyboard shortcuts
       window.addEventListener("keydown", (e) => {
         if (!e.altKey) return;
-        if (e.key === "1") {
+        if (e.key === "1" && elP) {
           elP.focus();
           primary = "pyeong";
           setPrimaryLabel();
         }
-        if (e.key === "2") {
+        if (e.key === "2" && elM) {
           elM.focus();
           primary = "sqm";
           setPrimaryLabel();
         }
-        if (e.key === "3") {
+        if (e.key === "3" && elF) {
           elF.focus();
           primary = "sqft";
           setPrimaryLabel();
@@ -1142,12 +1160,12 @@
         const u = url.searchParams.get("u");
         const v = url.searchParams.get("v");
         const d = url.searchParams.get("d");
-        if (d != null && ["0", "1", "2", "3", "4"].includes(d))
+        if (d != null && ["0", "1", "2", "3", "4"].includes(d) && roundingEl)
           roundingEl.value = d;
 
         if (!u || v == null) {
           setPrimaryLabel();
-          statusEl.textContent = t("statusAutoConvert");
+          if (statusEl) statusEl.textContent = t("statusAutoConvert");
           return;
         }
         if (u === "pyeong" || u === "sqm" || u === "sqft") {
@@ -1157,7 +1175,7 @@
           showToast(t("toastLinkLoaded"));
         } else {
           setPrimaryLabel();
-          statusEl.textContent = t("statusAutoConvert");
+          if (statusEl) statusEl.textContent = t("statusAutoConvert");
         }
       })();
     </script>
