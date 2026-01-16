@@ -892,12 +892,15 @@
         const formatLabelEl = document.getElementById("formatLabel");
         if (!primaryLabelEl || !formatLabelEl) return; // 요소가 없으면 리턴
         
+        // primary 변수를 안전하게 접근 (변수 선언 순서와 무관하게)
+        const currentPrimary = (typeof primary !== "undefined" && primary) ? primary : "pyeong";
+        
         const map = {
           pyeong: t("unitPyeongLabel"),
           sqm: t("unitSqmLabel"),
           sqft: t("unitSqftLabel"),
         };
-        primaryLabelEl.textContent = map[primary] || t("unitPyeongLabel");
+        primaryLabelEl.textContent = map[currentPrimary] || t("unitPyeongLabel");
         formatLabelEl.textContent = t("formatDecimal", { dp: roundingEl.value });
       }
 
