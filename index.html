@@ -431,10 +431,8 @@
           <div class="row between">
             <h2 style="margin: 0" data-i18n="sectionTitle">변환</h2>
             <div class="row">
-              <span class="pill">⚡ 실시간</span>
-              <span class="pill"
-                >⌛ 10분? <strong>아니고</strong> 변환기 😄</span
-              >
+              <span class="pill" data-i18n="pillRealtime">⚡ 실시간</span>
+              <span class="pill" data-i18n-html="pillConverter">⌛ 10분? <strong>아니고</strong> 변환기 😄</span>
             </div>
           </div>
 
@@ -449,6 +447,7 @@
                   id="inPyeong"
                   type="text"
                   inputmode="decimal"
+                  data-i18n-placeholder="placeholderExample"
                   placeholder="예: 24"
                 />
                 <button class="mini ok" id="copyPyeong" data-i18n-title="btnCopy" title="복사" data-i18n="btnCopy">
@@ -468,6 +467,7 @@
                   id="inSqm"
                   type="text"
                   inputmode="decimal"
+                  data-i18n-placeholder="placeholderExample"
                   placeholder="예: 84"
                 />
                 <button class="mini ok" id="copySqm" data-i18n-title="btnCopy" title="복사" data-i18n="btnCopy">복사</button>
@@ -485,6 +485,7 @@
                   id="inSqft"
                   type="text"
                   inputmode="decimal"
+                  data-i18n-placeholder="placeholderExample"
                   placeholder="예: 904"
                 />
                 <button class="mini ok" id="copySqft" data-i18n-title="btnCopy" title="복사" data-i18n="btnCopy">복사</button>
@@ -526,15 +527,15 @@
             </div>
           </div>
 
-          <div class="quick" aria-label="빠른 평 입력">
-            <button data-q="10">10평</button>
-            <button data-q="15">15평</button>
-            <button data-q="20">20평</button>
-            <button data-q="24">24평</button>
-            <button data-q="30">30평</button>
-            <button data-q="34">34평</button>
-            <button data-q="40">40평</button>
-            <button data-q="50">50평</button>
+          <div class="quick" data-i18n-aria-label="quickInputAria">
+            <button data-q="10" data-i18n="quick10">10평</button>
+            <button data-q="15" data-i18n="quick15">15평</button>
+            <button data-q="20" data-i18n="quick20">20평</button>
+            <button data-q="24" data-i18n="quick24">24평</button>
+            <button data-q="30" data-i18n="quick30">30평</button>
+            <button data-q="34" data-i18n="quick34">34평</button>
+            <button data-q="40" data-i18n="quick40">40평</button>
+            <button data-q="50" data-i18n="quick50">50평</button>
           </div>
 
           <div id="status" class="help" style="margin-top: 12px"></div>
@@ -706,6 +707,18 @@
           unitSqmLabel: "m²",
           unitSqftLabel: "ft²",
           oneLineFormat: "{p}pyeong = {m}m² = {f}ft²",
+          pillRealtime: "⚡ Realtime",
+          pillConverter: "⌛ 10 min? <strong>No</strong>, converter 😄",
+          placeholderExample: "e.g. 24",
+          quickInputAria: "Quick pyeong input",
+          quick10: "10 pyeong",
+          quick15: "15 pyeong",
+          quick20: "20 pyeong",
+          quick24: "24 pyeong",
+          quick30: "30 pyeong",
+          quick34: "34 pyeong",
+          quick40: "40 pyeong",
+          quick50: "50 pyeong",
         },
       };
 
