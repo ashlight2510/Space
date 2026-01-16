@@ -1080,59 +1080,69 @@
       });
 
       // Swap: rotate primary (pyeong -> sqm -> sqft -> pyeong)
-      btnSwap.onclick = () => {
-        primary =
-          primary === "pyeong" ? "sqm" : primary === "sqm" ? "sqft" : "pyeong";
-        computeFrom(primary);
-        focusPrimary();
-        showToast(t("toastSwapChanged"));
-      };
+      if (btnSwap) {
+        btnSwap.onclick = () => {
+          primary =
+            primary === "pyeong" ? "sqm" : primary === "sqm" ? "sqft" : "pyeong";
+          computeFrom(primary);
+          focusPrimary();
+          showToast(t("toastSwapChanged"));
+        };
+      }
 
       // Clean current field
-      btnClean.onclick = () => {
-        const el = currentInputEl();
-        el.value = "";
-        if (el === elP) computeFrom("pyeong");
-        if (el === elM) computeFrom("sqm");
-        if (el === elF) computeFrom("sqft");
-        el.focus();
-        showToast(t("toastCleared"));
-      };
+      if (btnClean) {
+        btnClean.onclick = () => {
+          const el = currentInputEl();
+          if (el) {
+            el.value = "";
+            if (el === elP) computeFrom("pyeong");
+            if (el === elM) computeFrom("sqm");
+            if (el === elF) computeFrom("sqft");
+            el.focus();
+            showToast(t("toastCleared"));
+          }
+        };
+      }
 
       // Reset all
-      btnReset.onclick = () => {
-        elP.value = "";
-        elM.value = "";
-        elF.value = "";
-        oneLineEl.value = "";
-        primary = "pyeong";
-        setPrimaryLabel();
-        statusEl.textContent = t("statusAutoConvert");
-        showToast(t("toastReset"));
-        elP.focus();
-        // clear URL params
-        history.replaceState(null, "", location.pathname);
-      };
+      if (btnReset) {
+        btnReset.onclick = () => {
+          if (elP) elP.value = "";
+          if (elM) elM.value = "";
+          if (elF) elF.value = "";
+          if (oneLineEl) oneLineEl.value = "";
+          primary = "pyeong";
+          setPrimaryLabel();
+          if (statusEl) statusEl.textContent = t("statusAutoConvert");
+          showToast(t("toastReset"));
+          if (elP) elP.focus();
+          // clear URL params
+          history.replaceState(null, "", location.pathname);
+        };
+      }
 
       // Share: store current primary value in URL (?u=pyeong&v=24&d=2)
-      btnShare.onclick = async () => {
-        const unit = primary;
-        const val =
-          unit === "pyeong"
-            ? parseNum(elP.value)
-            : unit === "sqm"
-            ? parseNum(elM.value)
-            : parseNum(elF.value);
-        if (val == null) return showToast(t("toastNoValue"), "warn");
+      if (btnShare) {
+        btnShare.onclick = async () => {
+          const unit = primary;
+          const val =
+            unit === "pyeong"
+              ? parseNum(elP?.value)
+              : unit === "sqm"
+              ? parseNum(elM?.value)
+              : parseNum(elF?.value);
+          if (val == null) return showToast(t("toastNoValue"), "warn");
 
-        const url = new URL(location.href);
-        url.searchParams.set("u", unit);
-        url.searchParams.set("v", String(val));
-        url.searchParams.set("d", roundingEl.value);
+          const url = new URL(location.href);
+          url.searchParams.set("u", unit);
+          url.searchParams.set("v", String(val));
+          if (roundingEl) url.searchParams.set("d", roundingEl.value);
 
-        await copyText(url.toString());
-        showToast(t("toastLinkCopied"));
-      };
+          await copyText(url.toString());
+          showToast(t("toastLinkCopied"));
+        };
+      }
 
       // Keyboard shortcuts
       window.addEventListener("keydown", (e) => {
