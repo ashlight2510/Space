@@ -545,10 +545,10 @@
           <h3 data-i18n="summaryTitle">요약</h3>
           <div class="row" style="margin-top: 8px">
             <span class="pill"
-              >📌 기준: <strong id="primaryLabel">평</strong></span
+              >📌 <span data-i18n="labelPrimary">기준</span>: <strong id="primaryLabel">평</strong></span
             >
             <span class="pill"
-              >🧾 포맷: <strong id="formatLabel">소수 2자리</strong></span
+              >🧾 <span data-i18n="labelFormat">포맷</span>: <strong id="formatLabel">소수 2자리</strong></span
             >
           </div>
 
@@ -808,7 +808,7 @@
         if (browser && browser.toLowerCase().startsWith("ko")) {
           return "ko";
         }
-        return defaultLang;
+        return "ko";
       }
 
       document.querySelectorAll(".lang-switch button").forEach((button) => {
